@@ -261,13 +261,15 @@ void ariel::Tree::remove (int i){
         if (root->getLeft() == NULL) 
         { 
             node *temp = root->getRight(); 
-          //   delete root; 
+            delete root; 
+          //   destroy (root);
             return temp; 
         } 
         else if (root->getRight() == NULL) 
         { 
             node *temp = root->getLeft(); 
-          //   delete root; 
+             delete root;
+          // destroy (root); 
             return temp; 
         } 
   

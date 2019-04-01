@@ -94,8 +94,12 @@ using namespace ariel;
 }
 
     int ariel::Tree::root(){
+         if(Tree::head == NULL){
+               std::__throw_bad_exception();
+         }
          return Tree::head->getValue();
     }
+
     int ariel::Tree::parent(int i){
           if (Tree::contains(i) == FALSE){
                std::__throw_bad_exception();
@@ -160,9 +164,8 @@ int ariel::Tree::left(int i,node* newHead)
 {
      int ans=0;
       if(newHead->getValue() == i){     
-            if(Tree::head->getLeft()!=NULL){
-
-           ans= newHead->getLeft()->getValue();
+            if(newHead->getLeft()!= NULL){
+             ans= newHead->getLeft()->getValue();
            return ans;
             }
             else{ std::__throw_bad_exception ();}
@@ -181,11 +184,13 @@ int ariel::Tree::left(int i,node* newHead)
 
     int ariel::Tree::right(int i){
         if(Tree::contains(i)==TRUE){
-                if( Tree::head->getValue() == i){
-                     if(Tree::head->getRight()!=NULL){
+                if(Tree::head->getValue() == i){
+                     if(Tree::head->getRight()!= NULL){
                      return Tree::head->getRight()->getValue();
                      }
-                     else{std::__throw_bad_exception ();}  
+                     else{
+                          std::__throw_bad_exception ();
+                          }  
                 }
                 else{
                      if(Tree::head->getValue() < i)
@@ -203,11 +208,15 @@ int ariel::Tree::left(int i,node* newHead)
     int ariel::Tree::right(int i,node* newHead){
          int ans=0;
       if(newHead->getValue() == i){
-           if(Tree::head->getRight()!=NULL){
+           //cout<<newHead->getValue()<<"right"<<
+           if(newHead->getRight()!= NULL){
+                
                 ans= newHead->getRight()->getValue();
                 return ans;
             }
-            else{ std::__throw_bad_exception ();}
+            else{
+                  std::__throw_bad_exception ();
+                  }
       }
        if(newHead->getValue()<i){
          return  right(i, newHead->getRight());
@@ -224,14 +233,13 @@ void ariel::Tree::remove (int i){
         {
              std::__throw_bad_exception ();
         }
-    else if (Tree::contains(i)== false)
+      if (Tree::contains(i)== FALSE)
         {
              std::__throw_bad_exception ();
         }
         else
         {
-            node *temp=head;
-            head=deleteNode(temp,i);
+            head = deleteNode(head , i); 
             treesize--;
         }
         
@@ -250,8 +258,11 @@ void ariel::Tree::remove (int i){
   
     // If the key to be deleted is greater than the root's key, 
     // then it lies in right subtree 
-    else if (key > root->getValue()) 
-        root->setRight( deleteNode(root->getRight(), key)); 
+    else if (key > root->getValue()){
+
+        root->setRight(deleteNode(root->getRight(), key)); 
+    }
+
   
     // if key is same as root's key, then This is the node 
     // to be deleted 
@@ -259,18 +270,20 @@ void ariel::Tree::remove (int i){
     { 
         // node with only one child or no child 
         if (root->getLeft() == NULL) 
-        { 
-            node *temp = root->getRight(); 
+        {        
+                 node *temp = root->getRight(); 
+            if (temp != NULL)
+               temp->setParent(root->getParent());
             delete root; 
-          //   destroy (root);
             return temp; 
         } 
         else if (root->getRight() == NULL) 
         { 
             node *temp = root->getLeft(); 
+            if (temp != NULL)
+               temp->setParent(root->getParent());
              delete root;
-          // destroy (root); 
-            return temp; 
+             return temp; 
         } 
   
         // node with two children: Get the inorder successor (smallest 
@@ -287,6 +300,9 @@ void ariel::Tree::remove (int i){
 } 
  node* Tree::minValueNode(node* n) 
 { 
+     if(head == NULL){
+          return NULL;
+     }
      node* current = n;
     /* loop down to find the leftmost leaf */
     while (current->getLeft() != NULL) 
@@ -320,4 +336,3 @@ void ariel::Tree::printTree(node *head) {
         printTree(head->getRight());
         printf(")"); 
      }
-

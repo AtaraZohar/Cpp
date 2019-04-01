@@ -106,7 +106,7 @@ using namespace ariel;
                }
            else{
                if(Tree::head->getValue()== i){
-                         return 0;
+                        std::__throw_bad_exception();
                }
                 else{
                          if(Tree::head->getValue()>i)

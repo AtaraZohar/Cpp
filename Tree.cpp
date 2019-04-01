@@ -4,8 +4,8 @@
      
 //    ariel::class node
 using namespace ariel;
-    void ariel::Tree::insert(int i){
-         if(Tree::contains(i)==FALSE){
+    void ariel::Tree::insert(int i){//this function put a new value in the tree
+         if(Tree::contains(i)==FALSE){//just if the value isent in the tree all ready
            if (Tree::size() ==0){
                   Tree::treesize++;
               node* newHead=new node(i);
@@ -14,11 +14,11 @@ using namespace ariel;
           }
            else{
                   Tree::treesize++;
-              if (i> Tree::head->getValue()){
+              if (i> Tree::head->getValue()){//put the value in the right subtree
                    
                    insert(i,Tree::head->getRight(),Tree::head);
               }
-              else{
+              else{//put the value in the left subtree
                      insert(i,Tree::head->getLeft(),Tree::head);
               }
             }
@@ -27,7 +27,8 @@ using namespace ariel;
            std::__throw_bad_exception ();
       } 
       }
-    void ariel::Tree::insert(int i,node* newHead,node* nodeParent){
+
+    void ariel::Tree::insert(int i,node* newHead,node* nodeParent){//same code just recusivly
          if(newHead == NULL){
              node* newNode=new node(i);
              newNode->setParent(nodeParent);
@@ -49,22 +50,22 @@ using namespace ariel;
          }
     }
 
-    int ariel::Tree::size(){
+    int ariel::Tree::size(){//return the size if the tree
         return Tree::treesize;
     }
-    bool ariel::Tree::contains(int i){
-         if(Tree::treesize == 0){
+    bool ariel::Tree::contains(int i){//chack if a value is in the tree
+         if(Tree::treesize == 0){//if the tree is empty
               return FALSE;
          }
-         if( Tree::head->getValue() == i){
+         if( Tree::head->getValue() == i){//if we find the number in the tree
                      return TRUE;
                 }
            else{
-                     if(Tree::head->getValue() < i)
+                     if(Tree::head->getValue() < i)//serch the value in the right subtree
                      {
                           return contains(i, Tree::head->getRight());
                      }
-                    else{
+                    else{//search the value in the left subtree
                          return contains(i, Tree::head->getLeft());  
                     }
                 }
@@ -72,7 +73,7 @@ using namespace ariel;
     }
     
 
-    int ariel::Tree::contains(int i,node* newHead){
+    int ariel::Tree::contains(int i,node* newHead){//same code just recusivly
      //ans=TRUE;
 
       if(newHead==NULL){
@@ -93,25 +94,25 @@ using namespace ariel;
         return 0;
 }
 
-    int ariel::Tree::root(){
+    int ariel::Tree::root(){//return the root of the tree
          if(Tree::head == NULL){
                std::__throw_bad_exception();
          }
          return Tree::head->getValue();
     }
 
-    int ariel::Tree::parent(int i){
-          if (Tree::contains(i) == FALSE){
+    int ariel::Tree::parent(int i){// get a value and return the parent of the value
+          if (Tree::contains(i) == FALSE){//if the value dosent in the tree
                std::__throw_bad_exception();
                }
            else{
-               if(Tree::head->getValue()== i){
+               if(Tree::head->getValue()== i){//if the value is the head and he dosent have a parent
                         std::__throw_bad_exception();
                }
                 else{
-                         if(Tree::head->getValue()>i)
+                         if(Tree::head->getValue()>i)//serch the value in the left subtree
                            return  parent( i,Tree::head->getLeft());
-                         else{
+                         else{//serch the value in the right subtree
                             return  parent( i,Tree::head->getRight());
                          }
                     }
@@ -119,7 +120,7 @@ using namespace ariel;
               std::__throw_bad_exception();  
     }
 
-     int ariel::Tree::parent(int i,node* newHead){
+     int ariel::Tree::parent(int i,node* newHead){//same code just recusivly
     if(newHead==NULL){
          std::__throw_bad_exception();
     }
@@ -139,28 +140,28 @@ using namespace ariel;
      std::__throw_bad_exception();
  }
      
-    int ariel::Tree::left(int i){
-           if(Tree::contains(i)==TRUE){
+    int ariel::Tree::left(int i){//get a value and return his left son in the tree
+           if(Tree::contains(i)==TRUE){//if the value exist in the tree
                 if( Tree::head->getValue() == i){
-                     if(Tree::head->getLeft()!=NULL){
+                     if(Tree::head->getLeft()!=NULL){//chack if there is a son
                      return Tree::head->getLeft()->getValue();
                      }
                      else{std::__throw_bad_exception ();}
                 }
-                     if(Tree::head->getValue() < i)
+                     if(Tree::head->getValue() < i)//serch the value in the left subtree
                      {
                      return left(i, Tree::head->getRight());
-                     }
+                     }//serch the value in the right subtree
                        return left(i, Tree::head->getLeft());
            }
-           else{
+           else{//if the value isent exist in the tree
                 std::__throw_bad_exception ();
            }
 
             
 }
 
-int ariel::Tree::left(int i,node* newHead)
+int ariel::Tree::left(int i,node* newHead)//same code just recusivly
 {
      int ans=0;
       if(newHead->getValue() == i){     
@@ -182,10 +183,10 @@ int ariel::Tree::left(int i,node* newHead)
     
 }
 
-    int ariel::Tree::right(int i){
-        if(Tree::contains(i)==TRUE){
+    int ariel::Tree::right(int i){//get a value and return his left son in the tree
+        if(Tree::contains(i)==TRUE){//if the value exist in the tree
                 if(Tree::head->getValue() == i){
-                     if(Tree::head->getRight()!= NULL){
+                     if(Tree::head->getRight()!= NULL){//chack if there is a son
                      return Tree::head->getRight()->getValue();
                      }
                      else{
@@ -194,10 +195,10 @@ int ariel::Tree::left(int i,node* newHead)
                 }
                 else{
                      if(Tree::head->getValue() < i)
-                     {
+                     {//serch the value in the right subtree
                      return right(i, Tree::head->getRight());
                      }
-                    else{
+                    else{//serch the value in the left subtree
                       return right(i, Tree::head->getLeft());
                     }
                 }
@@ -205,10 +206,9 @@ int ariel::Tree::left(int i,node* newHead)
           std::__throw_bad_exception ();//לזרוק חריגה
     }
 
-    int ariel::Tree::right(int i,node* newHead){
+    int ariel::Tree::right(int i,node* newHead){//same code just recusivly
          int ans=0;
       if(newHead->getValue() == i){
-           //cout<<newHead->getValue()<<"right"<<
            if(newHead->getRight()!= NULL){
                 
                 ans= newHead->getRight()->getValue();
@@ -228,7 +228,7 @@ int ariel::Tree::left(int i,node* newHead)
        }
        return ans;
 }
-void ariel::Tree::remove (int i){
+void ariel::Tree::remove (int i){//delete a node from the tree
         if ( Tree::head == NULL)
         {
              std::__throw_bad_exception ();
@@ -246,7 +246,7 @@ void ariel::Tree::remove (int i){
     }
 
  node* ariel::Tree::deleteNode( node* root, int key) 
-{ 
+{ // we got this code from https://www.geeksforgeeks.org/binary-search-tree-set-2-delete/
     // base case 
     if (root == NULL) 
     return root; 
@@ -311,7 +311,7 @@ void ariel::Tree::remove (int i){
     return current; 
 }
 
-void::ariel::Tree::destroy(node* currentNode){
+void::ariel::Tree::destroy(node* currentNode){//delete the tree
       if (currentNode != NULL)	{
         destroy(currentNode->getLeft());
         currentNode->setLeft(NULL);
@@ -321,11 +321,11 @@ void::ariel::Tree::destroy(node* currentNode){
       }
     
 }
- void ariel::Tree::print(){ 
+ void ariel::Tree::print(){ //print the tree
         node *p=Tree::head; 
         printTree(p);
     }
-void ariel::Tree::printTree(node *head) {
+void ariel::Tree::printTree(node *head) {//found this function from the internet
         if(!head) {
             printf("NULL");
 	        return; 

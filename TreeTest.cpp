@@ -102,4 +102,6 @@ int main() {
  
  tc.print();  
   cout << "You have " << tc.right() << " right answers and " << tc.wrong() << " wrong answers so your grade is " << tc.grade() << ". Great!" << endl;
+
+
 }

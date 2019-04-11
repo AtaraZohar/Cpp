@@ -17,13 +17,13 @@
  * 
  */
 
+
 #pragma once
 
 #define CHECK_OK(actual) check_ok([&](){actual;}, __FILE__+string(":")+to_string(__LINE__))
 #define CHECK_THROWS(actual) check_throws([&](){actual;}, __FILE__+string(":")+to_string(__LINE__))
 #define CHECK_EQUAL(actual,expected) check_equal([&](){return actual;}, expected, __FILE__+string(":")+to_string(__LINE__))
 #define CHECK_OUTPUT(actual,expected) check_equal([&](){ostringstream ostr; ostr<<"'"<<actual<<"'"; return ostr.str();}, "'"+string(expected)+"'", __FILE__+string(":")+to_string(__LINE__))
-#define CHECK_INPUT(actual,expected) check_input(actual, expected)
 
 #include <string>
 #include <iostream>
@@ -51,13 +51,14 @@ class TestCase {
   clock_t  start_time; // time in which the test-case is constructed.
 
 public:
-   TestCase(const string& name, ostream& output=cerr): 
+   TestCase(const string& name="", ostream& output=cerr): 
      name(name),
      output(output),
      passed(0), failed(0),
      start_time(clock())
      {
        std::signal(SIGTERM, catch_signal);
+       std::signal(SIGSEGV, catch_signal);
      }
   
   int right() const { return this->passed; }
@@ -78,9 +79,20 @@ public:
     return *this;
   }
   
-  TestCase& print_timeout()  {
-    output << "Your program timed out! (caught signal TERM)" << endl;
+  TestCase& print_signal(int signal)  {
+    if (signal==SIGTERM) {
+      output << "Your program timed out! (caught signal TERM)" << endl;
+    } else if (signal==SIGSEGV) {
+      output << "Your program made a segmentation fault! (caught signal SEGV)" << endl;
+    } else {
+      output << "Your program caught signal #" << signal << endl;
+    }
     print(output, /*show_grade=*/false);
+    return *this;
+  }
+
+  TestCase&  setname(const string& newname) {
+    name = newname;
     return *this;
   }
 
@@ -100,7 +112,7 @@ public:
     try {
       actual_func();
       failed++;
-      output << context << ", "  << title() << "There should be an exception!" << endl;
+      output << title(context) << "There should be an exception!" << endl;
     } catch(...) {
       passed++;
     }
@@ -111,31 +123,37 @@ public:
     try {
       TVAL actual_value = get_actual_value<TFUNC,TVAL>(actual_func, context);
       if (incorrect(actual_value==expected_value))
-        output << context << ", " << title() << "the result was " << actual_value << " but it should equal " << expected_value << "!" << endl;
+        output << title(context) << "the result was " << actual_value << " but it should equal " << expected_value << "!" << endl;
     } catch(...) {}
     return *this;
   }
 
 private:
   
-  string title() {
-    return name + " test #" + std::to_string(total()) + ": ";
+  string title(const string& context) {
+    return name + /*" test #" + std::to_string(total()) + */ ", " + context + ": ";
   }
   
   template<typename TFUNC, typename TVAL> TVAL get_actual_value(TFUNC actual_func, const string& context) {
     try {
-      return actual_func();
+      if (std::is_same<TVAL,void>::value) {
+        // output << title(context) << " void " << endl;
+        actual_func();
+      } else {
+        // output << title(context) << " TVAL " << endl;
+        return actual_func();
+      }
     } catch (const string& message) {
       failed++;
-      output << context << ", "  << title() << "There was an exception: " << message << endl;
+      output << title(context) << "There was an exception: " << message << endl;
       throw;
     } catch (const exception& ex) {
       failed++;
-      output << context << ", "  << title() << "There was an exception: " << ex.what() << endl;
+      output << title(context) << "There was an exception: " << ex.what() << endl;
       throw;
     } catch (...) {
       failed++;
-      output << context << ", "  << title() << "There was an exception." << endl;
+      output << title(context) << "There was an exception." << endl;
       throw;
     }
   }
